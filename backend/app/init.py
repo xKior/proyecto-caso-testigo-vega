@@ -38,5 +38,27 @@ def create_app():
     
     from .routes import bp
     app.register_blueprint(bp)
+
+    # Fallback routes without the /api prefix to preserve compatibility
+    # These simply call the blueprint handlers so responses are identical.
+    from .routes import (
+        get_tasks as _get_tasks,
+        get_task as _get_task,
+        create_task as _create_task,
+        update_task as _update_task,
+        delete_task as _delete_task,
+        get_tasks_by_status as _get_tasks_by_status,
+        get_statistics as _get_statistics,
+        health as _health,
+    )
+
+    app.add_url_rule('/tasks', endpoint='tasks_root_get', view_func=_get_tasks, methods=['GET', 'OPTIONS'])
+    app.add_url_rule('/tasks/<int:task_id>', endpoint='tasks_root_get_item', view_func=_get_task, methods=['GET', 'OPTIONS'])
+    app.add_url_rule('/tasks', endpoint='tasks_root_post', view_func=_create_task, methods=['POST', 'OPTIONS'])
+    app.add_url_rule('/tasks/<int:task_id>', endpoint='tasks_root_put', view_func=_update_task, methods=['PUT', 'OPTIONS'])
+    app.add_url_rule('/tasks/<int:task_id>', endpoint='tasks_root_delete', view_func=_delete_task, methods=['DELETE', 'OPTIONS'])
+    app.add_url_rule('/tasks/status/<status>', endpoint='tasks_root_status', view_func=_get_tasks_by_status, methods=['GET', 'OPTIONS'])
+    app.add_url_rule('/statistics', endpoint='statistics_root', view_func=_get_statistics, methods=['GET', 'OPTIONS'])
+    app.add_url_rule('/health', endpoint='health_root', view_func=_health, methods=['GET', 'OPTIONS'])
     
     return app
