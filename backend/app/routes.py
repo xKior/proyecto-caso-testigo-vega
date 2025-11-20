@@ -6,7 +6,7 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 
 # ENDPOINTS CRUD
 
-@bp.route('/tasks', methods=['GET'])
+@bp.route('/tasks', methods=['GET', 'OPTIONS'])
 def get_tasks():
     """GET: Obtiene todas las tareas con filtros opcionales"""
     try:
@@ -22,7 +22,7 @@ def get_tasks():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@bp.route('/tasks/<int:task_id>', methods=['GET'])
+@bp.route('/tasks/<int:task_id>', methods=['GET', 'OPTIONS'])
 def get_task(task_id):
     """GET: Obtiene una tarea específica"""
     try:
@@ -34,7 +34,7 @@ def get_task(task_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@bp.route('/tasks', methods=['POST'])
+@bp.route('/tasks', methods=['POST', 'OPTIONS'])
 def create_task():
     """POST: Crea una nueva tarea"""
     try:
@@ -54,7 +54,7 @@ def create_task():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@bp.route('/tasks/<int:task_id>', methods=['PUT'])
+@bp.route('/tasks/<int:task_id>', methods=['PUT', 'OPTIONS'])
 def update_task(task_id):
     """PUT: Actualiza una tarea"""
     try:
@@ -74,7 +74,7 @@ def update_task(task_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@bp.route('/tasks/<int:task_id>', methods=['DELETE'])
+@bp.route('/tasks/<int:task_id>', methods=['DELETE', 'OPTIONS'])
 def delete_task(task_id):
     """DELETE: Elimina una tarea"""
     try:
@@ -88,7 +88,7 @@ def delete_task(task_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@bp.route('/tasks/status/<status>', methods=['GET'])
+@bp.route('/tasks/status/<status>', methods=['GET', 'OPTIONS'])
 def get_tasks_by_status(status):
     """GET: Obtiene tareas por estado"""
     try:
@@ -97,7 +97,7 @@ def get_tasks_by_status(status):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@bp.route('/statistics', methods=['GET'])
+@bp.route('/statistics', methods=['GET', 'OPTIONS'])
 def get_statistics():
     """GET: Obtiene estadísticas"""
     try:
@@ -106,7 +106,7 @@ def get_statistics():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@bp.route('/health', methods=['GET'])
+@bp.route('/health', methods=['GET', 'OPTIONS'])
 def health():
     """GET: Health check"""
     return jsonify({'status': 'healthy'}), 200
