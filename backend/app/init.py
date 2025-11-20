@@ -7,7 +7,7 @@ def create_app():
     app = Flask(__name__)
     app.config['JSON_SORT_KEYS'] = False
 
-    # Allow multiple origins via environment variable (comma-separated)
+    # Allow multiple origins via environment variable (comma-separated). Default includes project Vercel URL and localhost dev ports.
     default_origins = [
         "https://proyecto-caso-testigo-vega-hr72n8bgp-angels-projects-8c86d77d.vercel.app",
         "http://localhost:3000",
@@ -19,27 +19,10 @@ def create_app():
     else:
         allowed_origins = default_origins
 
-    CORS(app, resources={r"/*": {
-        "origins": allowed_origins,
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-    }})
+    # Scope CORS to /api/* (your blueprint uses url_prefix='/api')
+    CORS(app, resources={r"/api/*": {"origins": allowed_origins, "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"], "allow_headers": ["Content-Type", "Authorization"]}})
 
-    # Ensure the app responds to preflight OPTIONS requests for any path
-    @app.before_request
-    def handle_options():
-        if request.method == 'OPTIONS':
-            origin = request.headers.get('Origin')
-            resp = make_response()
-            if '*' in allowed_origins:
-                resp.headers['Access-Control-Allow-Origin'] = '*'
-            elif origin and origin in allowed_origins:
-                resp.headers['Access-Control-Allow-Origin'] = origin
-            resp.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS'
-            resp.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
-            resp.headers['Access-Control-Max-Age'] = '86400'
-            return resp
-
+    # Reinforce CORS headers dynamically for any response (helps with some reverse proxies)
     @app.after_request
     def add_cors_headers(response):
         origin = request.headers.get('Origin')
@@ -52,8 +35,8 @@ def create_app():
         return response
 
     init_db(app)
-
+    
     from .routes import bp
     app.register_blueprint(bp)
-
+    
     return app

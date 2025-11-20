@@ -10,7 +10,7 @@ export const fetchTasks = createAsyncThunk(
     if (filters.status) params.append('status', filters.status)
     if (filters.priority) params.append('priority', filters.priority)
     
-    const response = await axios.get(`${API_URL}/tasks?${params}`)
+    const response = await axios.get(`${API_URL}/tasks?${params.toString()}`)
     return response.data.data
   }
 )
@@ -18,7 +18,7 @@ export const fetchTasks = createAsyncThunk(
 export const fetchStatistics = createAsyncThunk(
   'tasks/fetchStatistics',
   async () => {
-    const response = await axios.get(`${API_URL}/api/statistics`)
+    const response = await axios.get(`${API_URL}/statistics`)
     return response.data.data
   }
 )
@@ -27,7 +27,7 @@ export const createTask = createAsyncThunk(
   'tasks/createTask',
   async (taskData) => {
     try {
-      const response = await axios.post(`${API_URL}/api/tasks`, taskData)
+      const response = await axios.post(`${API_URL}/tasks`, taskData)
       return response.data.data
     } catch (err) {
       const msg = err?.response?.data?.error || err?.response?.data?.message || err.message || 'Unknown error'
@@ -39,7 +39,7 @@ export const createTask = createAsyncThunk(
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
   async ({ id, data }) => {
-    const response = await axios.put(`${API_URL}/api/tasks/${id}`, data)
+    const response = await axios.put(`${API_URL}/tasks/${id}`, data)
     return response.data.data
   }
 )
@@ -47,7 +47,7 @@ export const updateTask = createAsyncThunk(
 export const deleteTask = createAsyncThunk(
   'tasks/deleteTask',
   async (id) => {
-    await axios.delete(`${API_URL}/api/tasks/${id}`)
+    await axios.delete(`${API_URL}/tasks/${id}`)
     return id
   }
 )
